@@ -33,6 +33,8 @@ public class Indexer {
           Path documentsPath = Paths.get("ordini");
           // Directory in cui Lucene salverà l'indice
           Path indexPath = Paths.get("indice");
+          // Tracciamo il tempo di indicizzazione
+          long inizio = System.nanoTime();
 
           try {
                // 1. Definizione degli analyzer
@@ -59,11 +61,15 @@ public class Indexer {
                     files.filter(Files::isRegularFile).filter(path -> path.toString().toLowerCase().endsWith(".txt"))
                               .forEach(path -> {
                                    try {
-                                        String filename = path.getFileName().toString();
                                         String content = Files.readString(path);
                                         String filePath = path.toAbsolutePath().toString();
+                                        String filename = path.getFileName().toString();
 
-                                        // 5. Creazione del documento Lucene
+                                        // Rimuove l'estensione .txt
+                                        if (filename.toLowerCase().endsWith(".txt")) {
+                                             filename = filename.substring(0, filename.length() - 4);
+                                        }
+                                        // 5. Creazione del documento Lucenefilename
                                         Document doc = new Document();
                                         // Campo filename: indicizzato e memorizzato
                                         doc.add(new TextField(
@@ -87,13 +93,15 @@ public class Indexer {
                                    }
                               });
                }
-               // 8. Chiusura e salvataggio dell'indice
+               // 7. Chiusura e salvataggio dell'indice
+               long fine = System.nanoTime();
                writer.close();
                directory.close();
                analyzer.close();
                filenameAnalyzer.close();
                contentAnalyzer.close();
-               System.out.println("\nIndicizzazione completata!");
+               System.out.println("\nIndicizzazione completata in " +
+                         ((fine - inizio) / 1_000_000_000.0) + " secondi.");
           } catch (IOException e) {
                e.printStackTrace();
           }

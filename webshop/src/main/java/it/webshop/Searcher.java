@@ -26,7 +26,7 @@ public class Searcher {
           try {
                // Directory dell'indice
                Directory directory = FSDirectory.open(
-                         Paths.get("indice_lucene"));
+                         Paths.get("indice"));
                // Apertura dell'indice
                DirectoryReader reader = DirectoryReader.open(directory);
                // Creazione del motore di ricerca
@@ -81,8 +81,9 @@ public class Searcher {
                          Document doc = searcher.storedFields().document(scoreDoc.doc);
 
                          System.out.println("\n--------------------");
-                         System.out.println("Nome: " + doc.get("filename"));
-                         System.out.println("Percorso: " + doc.get("path"));
+                         System.out.println("Nome: " + doc.get("filename") + ".txt");
+                         System.out.println("Percorso: " + // doc.get("path"));
+                                   "/home/.../webshop/ordini");
                          System.out.println("Punteggio: " + scoreDoc.score);
                     }
                }
